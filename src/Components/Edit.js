@@ -9,7 +9,7 @@ export class Edit extends Component {
     constructor(props){
         super(props);
 
-        console.log("Edit props " + props.info.id);
+        //console.log("Edit props " + props.info.id);
         this.state = {    
             id:props.info.id,
             name:props.info.name,       
@@ -51,6 +51,8 @@ export class Edit extends Component {
 
     editMe(e){
         console.log("Edit" + this.state.id);
+
+      
         axios.post('http://localhost:5000/contacts/update/' + this.state.id,{            
             name:this.state.name,
             surname:this.state.surname,
@@ -113,7 +115,7 @@ export class Edit extends Component {
 
                 <Form.Group  as={Row} controlId="formPlaintextPassword">
                     <Form.Label column sm="2">
-                    Phone
+                        Phone
                     </Form.Label>
                     <Col sm="10">
                     <Form.Control onChange = {this.onChangePhones} type="text" value={this.state.phones}/>

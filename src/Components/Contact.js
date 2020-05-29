@@ -4,14 +4,16 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import Edit from './Edit';
 import axios from "axios";
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
  
 
 export class Contact extends Component {
-    constructor(props){
-        
+    constructor(props){        
         super(props);
 
         this.state = {
+            change:props.changeContacts,
             id:props.contact._id,
             name:props.contact.name,
             surname:props.contact.surname ,
@@ -20,8 +22,8 @@ export class Contact extends Component {
             phones:props.contact.phones 
         };
 
-        this.showEdit = this.showEdit.bind(this);
-        
+        this.showEdit = this.showEdit.bind(this);         
+       
        
 
     }
@@ -31,9 +33,24 @@ export class Contact extends Component {
     }
 
     deleteMe(id){
-        console.log("Delete" + id)
-        axios.delete('http://localhost:5000/contacts/' + id)
-            .then(res => console.log(res.data));
+        confirmAlert({
+            title: 'Delete Contact',
+            message: 'Are you sure?',
+            buttons: [
+              {
+                label: 'Yes',
+                onClick: () => {
+                    axios.delete('http://localhost:5000/contacts/' + id)
+                    .then(this.state.change(id))
+                } 
+              },
+              {
+                label: 'No',
+                onClick: () => alert('Click No')
+              }
+            ]
+        });
+        
    
     }
     
@@ -48,33 +65,30 @@ export class Contact extends Component {
             <div style = {{paddingBottom: "1%"}}>
                 
                 <Edit info = {this.state} />
-                <Card style={{ width: '30%',marginLeft:'35%' }}>
-                
+                <Card style={{ width: '30%',marginLeft:'35%' }}>                
                 <Card.Body>
-                <Card.Title >
+                <Card.Title>
                     <h1 style = {{textAlign:"center"}}>{`${this.state.surname? this.state.surname : "Fetching"} ${this.state.name?this.state.name.charAt(0) + "." : "Fething..."}`}</h1>
-                    
-                    
                 </Card.Title>
 
                 
                     <Table striped bordered  variant="dark">
                         <tbody>                       
-                        <tr>
-                            <td>Name: </td><td>{this.state.name}</td>
-                        </tr>
-                        <tr>                    
-                            <td>Surname: </td><td>{this.state.surname}</td>
-                        </tr>
-                        <tr>
-                            <td>e-mail: </td><td>{this.state.email}</td>
-                        </tr>
-                        <tr>
-                            <td>Adress: </td><td>{this.state.adress}</td>
-                        </tr>
-                        <tr>
-                            <td>Phone: </td><td>{this.state.phones}</td>
-                        </tr>   
+                            <tr>
+                                <td>Name: </td><td>{this.state.name}</td>
+                            </tr>
+                            <tr>                    
+                                <td>Surname: </td><td>{this.state.surname}</td>
+                            </tr>
+                            <tr>
+                                <td>e-mail: </td><td>{this.state.email}</td>
+                            </tr>
+                            <tr>
+                                <td>Adress: </td><td>{this.state.adress}</td>
+                            </tr>
+                            <tr>
+                                <td>Phone: </td><td>{this.state.phones}</td>
+                            </tr>   
                         </tbody>                
                     
                     </Table>

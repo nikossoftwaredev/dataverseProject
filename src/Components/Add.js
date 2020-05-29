@@ -8,7 +8,8 @@ import axios from "axios"
 export class Add extends Component {
     constructor(props){
         super(props);
-        this.state = {            
+        this.state = {   
+            update: props.update,         
             name:"",
             surname: "",
             email: "",
@@ -16,12 +17,20 @@ export class Add extends Component {
             phones: ""
         }
 
+
+        //getting the function from parent component
+        //this.updateContents = this.props.update;
+        
+
         this.onSubmit = this.onSubmit.bind(this);
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangeSurname = this.onChangeSurname.bind(this);
         this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangeAdress = this.onChangeAdress.bind(this);
         this.onChangePhones = this.onChangePhones.bind(this);
+        this.hideSelf = this.hideSelf.bind(this);
+        this.isMailValid = this.isMailValid.bind(this);
+        this.isPhoneValid = this.isPhoneValid.bind(this);
     }
 
     onChangeName(e){        
@@ -48,6 +57,7 @@ export class Add extends Component {
 
     hideSelf(){
         document.getElementById("add-form").style.display = "none";
+        this.state.update();
     }
 
     onSubmit(e){        
@@ -61,42 +71,64 @@ export class Add extends Component {
         }
 
         axios.post('http://localhost:5000/contacts/add',toAdd)
-        .then(console.log(toAdd));
+        .then(this.state.update());
 
-        e.preventDefault();
-
+        
         this.hideSelf();
+        document.getElementById("myForm").reset()
+        e.preventDefault();
+        
+    }
+
+    isMailValid(e){
+
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.state.email))       
+            e.target.style.borderColor = "green";
+        else
+            e.target.style.borderColor = "red";
+
+        return (false)
+    }
+
+    isPhoneValid(e){
+         
+        if (!isNaN(this.state.phones))       
+            e.target.style.borderColor = "green";
+        else
+            e.target.style.borderColor = "red";
+
+        return (false)
     }
 
     render() {
         return (
             <div id = "add-form" className = "add-container"> 
 
-                <Form onSubmit = {this.onSubmit}>
+                <Form id ="myForm" onSubmit = {this.onSubmit}>
                 <Form.Group as={Row} controlId="formPlaintextEmail">
                     <Form.Label column sm="2">
-                    Name
+                    Name <font color="red">*</font>
                     </Form.Label>
                     <Col sm="10">
-                    <Form.Control onChange = {this.onChangeName} type="text" placeholder="Name" />
+                    <Form.Control onChange = {this.onChangeName} type="text" placeholder="Name" required  />
                     </Col>
                 </Form.Group>
 
                 <Form.Group as={Row} controlId="formPlaintextEmail">
                     <Form.Label column sm="2">
-                    Surname
+                    Surname <font color="red">*</font>
                     </Form.Label>
                     <Col sm="10">
-                    <Form.Control onChange = {this.onChangeSurname} type="text" placeholder="Surname" />
+                    <Form.Control onChange = {this.onChangeSurname} type="text" placeholder="Surname" required />
                     </Col>
                 </Form.Group>
 
                 <Form.Group  as={Row} controlId="formPlaintextPassword">
                     <Form.Label column sm="2">
-                    E-mail
+                    E-mail <font color="red">*</font>
                     </Form.Label>
                     <Col sm="10">
-                    <Form.Control onChange = {this.onChangeEmail} type="mail" placeholder="E-mail"/>
+                    <Form.Control onBlur={this.isMailValid} onChange = {this.onChangeEmail} type="mail" placeholder="E-mail" required/>
                     </Col>
                 </Form.Group>
 
@@ -111,10 +143,10 @@ export class Add extends Component {
 
                 <Form.Group as={Row} controlId="formPlaintextPassword">
                     <Form.Label column sm="2">
-                    Phone
+                    Phone <font color="red">*</font>
                     </Form.Label>
                     <Col sm="10">
-                    <Form.Control onChange = {this.onChangePhones} type="text" placeholder="Phone"/>
+                    <Form.Control onBlur={this.isPhoneValid} onChange = {this.onChangePhones} type="text" placeholder="Phone" required/>
                     </Col>
                 </Form.Group>
 

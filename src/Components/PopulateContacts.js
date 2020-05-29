@@ -15,43 +15,62 @@ export class PopulateContacts extends Component {
             myContacts:null
         };
 
+        this.handleParentFun = this.handleParentFun.bind(this);
+        this.changeContacts = this.changeContacts.bind(this);
         
 
     }
 
     componentDidMount(){
+        this.handleParentFun();
+    }
+
+    
+
+    changeContacts = (id) =>{     
+        
+        this.setState({
+            myContacts:this.state.myContacts.filter(contact => {  
+                    console.log(contact.key)
+                    //console.log("contact id" + contact.id)              
+                    return contact.key != id;
+            })
+        })
+        
+    }
+
+    handleParentFun = () =>{
+        
         axios.get('http://localhost:5000/contacts/')
             .then(res => {
-                if(res.data.length > 0){                   
-                    
+                if(res.data.length > 0){     
                     this.setState(
                         {
                             contacts:res.data,
-                            myContacts:res.data.map( data => <Contact key = {data._id} contact = {data}/>)
+                            myContacts:res.data.map( data => <Contact changeContacts = {this.changeContacts} key = {data._id} contact = {data}/>)
                         }
-                    )             
-                    
+                    )
                 }
             })
+        
     }
 
+
+    
+
     showAdd(){
-        document.getElementById("add-form").style.display = "block";
-        
+        document.getElementById("add-form").style.display = "block";        
     }
     
     render() {
-        //this.state.fetching ? console.log("fetching") : console.log(this.state.contacts);       
-        
+        //this.state.fetching ? console.log("fetching") : console.log(this.state.contacts);         
         //console.log(this.state.contacts);
         return (
             <div> 
                 <h1 style = {{ textAlign:"center"}}>CONTACT LIST</h1>
-                <Button onClick = {this.showAdd}variant="outline-success" style={{ width: '30%',marginLeft:'35%' }}>ADD CONTACT</Button>           
+                <Button onClick = {this.showAdd} variant="outline-success" style={{ width: '30%',marginLeft:'35%' }}>ADD CONTACT</Button>           
                 {this.state.myContacts}
-                <Add/>
-                             
-                  
+                <Add update = {this.handleParentFun}/>                 
          
             </div>
         )
