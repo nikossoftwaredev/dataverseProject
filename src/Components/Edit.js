@@ -3,6 +3,7 @@ import { Col, Row, Form } from "react-bootstrap";
 import Button from 'react-bootstrap/Button'
 import '../index.css';
 import axios from "axios"
+import DisplayPhonesInput from "./DisplayPhonesInput"
 
 
 export class Edit extends Component {
@@ -11,6 +12,7 @@ export class Edit extends Component {
 
         //console.log("Edit props " + props.info.id);
         this.state = {    
+            refresh:props.refresh,
             id:props.info.id,
             name:props.info.name,       
             surname:props.info.surname,
@@ -23,7 +25,7 @@ export class Edit extends Component {
         this.onChangeSurname = this.onChangeSurname.bind(this);
         this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangeAdress = this.onChangeAdress.bind(this);
-        this.onChangePhones = this.onChangePhones.bind(this);
+        this.updatePhones = this.updatePhones.bind(this);
         this.editMe = this.editMe.bind(this);
         this.hideSelf = this.hideSelf.bind(this);
 
@@ -45,34 +47,59 @@ export class Edit extends Component {
         this.setState({adress: e.target.value});
     }
 
-    onChangePhones(e){        
-        this.setState({phones: e.target.value});
+    updatePhones(value,id){    
+                   
+        this.setState(
+            () =>{
+
+                let tmpPhones = this.state.phones;
+                tmpPhones[id-1] = parseInt(value);
+                return {
+                    ...this.state,
+                    phones:tmpPhones,
+                }
+            }
+            
+        )
     }
 
-    editMe(e){
-        console.log("Edit" + this.state.id);
+   
 
-      
-        axios.post('http://localhost:5000/contacts/update/' + this.state.id,{            
+    editMe(e){
+        
+        const toEdit = {
             name:this.state.name,
             surname:this.state.surname,
             email:this.state.email,
             adress:this.state.adress,
             phones:this.state.phones
-        })
-        .then(res => console.log(res.data));
+        }
+      
+            axios.post('http://localhost:5000/contacts/update/' + this.state.id,toEdit)
+        .then(this.state.refresh(toEdit))
+        .catch(err => console.log(err));
 
+        
+        this.hideSelf();        
         e.preventDefault();
-        this.hideSelf();
+        
    
     }
 
    
 
     hideSelf(){
-        document.getElementById(this.state.id).style.display = "none";
+        document.getElementById(this.state.id).style.display = "none";        
     }
+
     render() {
+
+        var i = 0;
+        const myP = this.state.phones.map( data =>{
+            i++;
+            return (<DisplayPhonesInput update = {this.updatePhones} id = {i} key = {data} value = {data}/>)
+        })
+
         return (
             <div id = {this.state.id} className = "add-container"> 
 
@@ -112,22 +139,11 @@ export class Edit extends Component {
                     <Form.Control onChange = {this.onChangeAdress} type="text" value={this.state.adress}/>
                     </Col>
                 </Form.Group>
+                
 
-                <Form.Group  as={Row} controlId="formPlaintextPassword">
-                    <Form.Label column sm="2">
-                        Phone
-                    </Form.Label>
-                    <Col sm="10">
-                    <Form.Control onChange = {this.onChangePhones} type="text" value={this.state.phones}/>
-                    </Col>
-                </Form.Group>
-
-
-                    <Button  variant="success" type="submit">
-                        Save 
-                    </Button>
-                                 
-                    <Button onClick = {this.hideSelf}>Hide</Button> 
+                {myP}
+                <Button variant="success" type="submit">Save</Button>                                 
+                <Button onClick = {this.hideSelf}>Hide</Button> 
 
                 </Form>       
                         

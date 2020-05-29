@@ -8,32 +8,31 @@ const contactSchema = new Schema({
         required:true,
         unique: true,
         trim: true, //trim the whitespace of the end
-        minlength: 3
+        
     },
     surname:{
         type: String,
         required:true,
         unique: true,
-        trim: true, //trim the whitespace of the end
-        minlength: 3
+        trim: true //trim the whitespace of the end
+       
     },
     email:{
         type: String,
         required:true,
         unique: true,
-        trim: true, //trim the whitespace of the end
-        minlength: 3
+        trim: true //trim the whitespace of the end
+        
     },
     adress:{
         type: String,
         required:false,
         unique: true,
-        trim: true, //trim the whitespace of the end
-        minlength: 3
+        trim: true //trim the whitespace of the end
+       
     },
     phones:{
-        type:[Number],
-        required:true,
+        type:[Number],        
         
     },
 },{

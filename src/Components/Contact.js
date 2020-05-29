@@ -13,7 +13,7 @@ export class Contact extends Component {
     constructor(props){        
         super(props);
 
-        this.state = {
+        this.state = {            
             change:props.changeContacts,
             id:props.contact._id,
             name:props.contact.name,
@@ -23,14 +23,21 @@ export class Contact extends Component {
             phones:props.contact.phones 
         };
 
-        this.showEdit = this.showEdit.bind(this);         
-       
+       this.showEdit = this.showEdit.bind(this);         
+       this.refresh = this.refresh.bind(this);
        
 
     }
 
-    componentDidMount(){
-        
+    refresh(data){
+        this.setState({
+            ...this.state,
+            name:data.name,
+            surname:data.surname ,
+            email:data.email ,
+            adress:data.adress ,
+            phones:data.phones 
+        })
     }
 
     deleteMe(id){
@@ -54,8 +61,7 @@ export class Contact extends Component {
    
     }
     
-    showEdit(){
-        console.log(this.state.id)
+    showEdit(){        
         document.getElementById(this.state.id).style.display = "block";
     }
 
@@ -71,7 +77,7 @@ export class Contact extends Component {
         return (
             <div style = {{paddingBottom: "1%"}}>
                 
-                <Edit info = {this.state} />
+                <Edit refresh = {this.refresh} info = {this.state} />
                 <Card style={{ width: '30%',marginLeft:'35%' }}>                
                 <Card.Body>
                 <Card.Title>
@@ -79,7 +85,7 @@ export class Contact extends Component {
                 </Card.Title>
 
                 
-                    <Table striped bordered  variant="dark">
+                    <Table striped bordered hover>
                         <tbody>                       
                             <tr>
                                 <td>Name: </td><td>{this.state.name}</td>
@@ -99,7 +105,7 @@ export class Contact extends Component {
                     </Table>
                     <div style = {{float : "right"}}>
                         <Button onClick = {this.showEdit} >Edit</Button>
-                        <Button onClick = { () => {this.deleteMe(this.state.id)}} variant="outline-danger">Delete</Button>
+                        <Button onClick = { () => {this.deleteMe(this.state.id)}} variant="danger">Delete</Button>
                     </div>
                 </Card.Body>
                 </Card>

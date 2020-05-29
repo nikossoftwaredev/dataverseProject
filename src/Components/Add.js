@@ -28,9 +28,9 @@ export class Add extends Component {
         this.showPhones = this.showPhones.bind(this);
 
         this.state = {   
+            refresh:props.refresh,
             phoneCounter:1,
-            myPhones: [<Phone  key = "1" id ="1" update = {this.updatePhones}/> ,<Phone key = "2" id ="2" update = {this.updatePhones}/>,<Phone key = "3" id ="3" update = {this.updatePhones}/> ,<Phone key = "4" id ="4" update = {this.updatePhones}/>,<Phone key = "5" id ="5" update = {this.updatePhones}/> ,<Phone key = "6" id ="6" update = {this.updatePhones}/>],
-            refresh: props.refresh,         
+            myPhones: [<Phone  key = "1" id ="1" update = {this.updatePhones}/> ,<Phone key = "2" id ="2" update = {this.updatePhones}/>,<Phone key = "3" id ="3" update = {this.updatePhones}/> ,<Phone key = "4" id ="4" update = {this.updatePhones}/>,<Phone key = "5" id ="5" update = {this.updatePhones}/> ,<Phone key = "6" id ="6" update = {this.updatePhones}/>],     
             name:"",
             surname: "",
             email: "",
@@ -92,13 +92,7 @@ export class Add extends Component {
                 }
             },this.showPhones
             
-        )
-
-        
-
-        
-        
-        
+        )       
         
     }
 
@@ -115,8 +109,6 @@ export class Add extends Component {
                 if(tmpCounter == 1)
                     document.getElementById("remove-phone").disabled = true; 
                 
-                             
-
                 return {
                     ...this.state,
                     phoneCounter:tmpCounter,
@@ -125,9 +117,6 @@ export class Add extends Component {
             
         )
 
-        
-
-        
     }
 
     onChangeName(e){        
@@ -151,13 +140,11 @@ export class Add extends Component {
    
 
     hideSelf(){
-        document.getElementById("add-form").style.display = "none";
-        this.state.refresh();
+        document.getElementById("add-form").style.display = "none";                
     }
 
     onSubmit(e){        
-
-        
+   
         const toAdd = {
             name:this.state.name,
             surname:this.state.surname,
@@ -165,15 +152,13 @@ export class Add extends Component {
             adress:this.state.adress,
             phones:this.state.phones 
         }
-
-
        
         axios.post('http://localhost:5000/contacts/add',toAdd)
-        .then(this.state.refresh());
+        .then(this.state.refresh);
 
         
         this.hideSelf();
-        document.getElementById("myForm").reset()
+        document.getElementById("myForm").reset()        
         e.preventDefault();
         
     }

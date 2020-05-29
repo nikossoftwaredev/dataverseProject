@@ -21,7 +21,7 @@ export class Phone extends Component {
     }
 
     onChange(e){
-        this.state.update(e.target.value,this.state.id);//e.target.value,this.state.id)
+        this.state.update(e.target.value,this.state.id);
     }
 
     isPhoneValid(e){
@@ -31,7 +31,7 @@ export class Phone extends Component {
         else
             e.target.style.borderColor = "red";
 
-        return (false)
+        
     }
 
     render() {

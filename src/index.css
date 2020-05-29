@@ -9,3 +9,16 @@
     width:40vw;  
     z-index: 2;      
 }
+
+
+
+.add{  
+    width: 30%;
+    margin-left:35%;
+}
+
+
+.add:hover{
+    background-color: chartreuse;
+    color:black;
+}
