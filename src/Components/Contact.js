@@ -6,6 +6,7 @@ import Edit from './Edit';
 import axios from "axios";
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
+import DisplayPhones from "./DisplayPhones"
  
 
 export class Contact extends Component {
@@ -45,8 +46,7 @@ export class Contact extends Component {
                 } 
               },
               {
-                label: 'No',
-                onClick: () => alert('Click No')
+                label: 'No',                
               }
             ]
         });
@@ -61,6 +61,13 @@ export class Contact extends Component {
 
     render() {
         //console.log(this.state.name)
+
+        var i = 0;
+        const displayP = this.state.phones.map( data =>{
+            i++;
+            return (<DisplayPhones id = {i} key = {data} value = {data}/>)
+        })
+
         return (
             <div style = {{paddingBottom: "1%"}}>
                 
@@ -86,9 +93,7 @@ export class Contact extends Component {
                             <tr>
                                 <td>Adress: </td><td>{this.state.adress}</td>
                             </tr>
-                            <tr>
-                                <td>Phone: </td><td>{this.state.phones}</td>
-                            </tr>   
+                            {displayP}   
                         </tbody>                
                     
                     </Table>

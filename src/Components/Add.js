@@ -12,44 +12,41 @@ export class Add extends Component {
     
     constructor(props){
         super(props);
-
-        this.state = {   
-            phoneCounter:1,
-            myPhones: [<Phone  key = "1" id ="1" change = {this.onChangePhones}/> ,<Phone key = "2" id ="2"/>,<Phone key = "3" id ="3"/> ,<Phone key = "4" id ="4"/>,<Phone key = "5" id ="5"/> ,<Phone key = "6" id ="6"/>],
-            update: props.update,         
-            name:"",
-            surname: "",
-            email: "",
-            adress: "",
-            phones: []
-        }
-
-        
         //getting the function from parent component
-        //this.updateContents = this.props.update;
-        
+        //this.updateContents = this.props.update;        
 
         this.onSubmit = this.onSubmit.bind(this);
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangeSurname = this.onChangeSurname.bind(this);
         this.onChangeEmail = this.onChangeEmail.bind(this);
         this.onChangeAdress = this.onChangeAdress.bind(this);
-        this.onChangePhones = this.onChangePhones.bind(this);
+        this.updatePhones = this.updatePhones.bind(this);
         this.hideSelf = this.hideSelf.bind(this);
         this.isMailValid = this.isMailValid.bind(this);
         this.addPhone = this.addPhone.bind(this);
         this.removePhone = this.removePhone.bind(this);
         this.showPhones = this.showPhones.bind(this);
+
+        this.state = {   
+            phoneCounter:1,
+            myPhones: [<Phone  key = "1" id ="1" update = {this.updatePhones}/> ,<Phone key = "2" id ="2" update = {this.updatePhones}/>,<Phone key = "3" id ="3" update = {this.updatePhones}/> ,<Phone key = "4" id ="4" update = {this.updatePhones}/>,<Phone key = "5" id ="5" update = {this.updatePhones}/> ,<Phone key = "6" id ="6" update = {this.updatePhones}/>],
+            refresh: props.refresh,         
+            name:"",
+            surname: "",
+            email: "",
+            adress: "",
+            phones: []
+        }
        
         
     }
 
     componentDidMount(){
         this.showPhones();
+        document.getElementById("remove-phone").disabled = true;
     }
 
-    showPhones(){     
-             
+    showPhones(){                  
         for(let i =1 ;i<=max_phones ; i++){
             if( this.state.phoneCounter >= i){
                 document.getElementById(i).style.display = "block";
@@ -59,25 +56,39 @@ export class Add extends Component {
         }
     }
 
+    updatePhones(value,id){               
+        this.setState(
+            () =>{
+
+                let tmpPhones = this.state.phones;
+                tmpPhones[id-1] = parseInt(value);
+                return {
+                    ...this.state,
+                    phones:tmpPhones,
+                }
+            }
+            
+        )
+    }
+
     addPhone(){
         this.setState(
-            prevState => {
+            () => {
                 let tmpCounter = this.state.phoneCounter;
-
                 
-                if(tmpCounter + 1 <= max_phones)
-                    tmpCounter = tmpCounter + 1;    
+                if(tmpCounter + 1 <= max_phones){
+                    tmpCounter = tmpCounter + 1;                    
+                }
+
+                if(tmpCounter == max_phones)
+                    document.getElementById("add-phone").disabled = true; 
+                else if(tmpCounter >1)
+                    document.getElementById("remove-phone").disabled = false; 
                              
                 
-                return {
-                    phoneCounter:tmpCounter,
-                    myPhones: prevState.myPhones,
-                    update: prevState.update,         
-                    name:prevState.name,
-                    surname: prevState.surname,
-                    email: prevState.email,
-                    adress: prevState.adress,
-                    phones: prevState.phones
+                return {                    
+                    ...this.state,
+                    phoneCounter:tmpCounter,        
                 }
             },this.showPhones
             
@@ -93,22 +104,22 @@ export class Add extends Component {
 
     removePhone(){
         this.setState(
-            prevState => {
+            () => {
                 let tmpCounter = this.state.phoneCounter;
 
-                if(tmpCounter >= 2)
-                    tmpCounter = prevState.phoneCounter - 1;            
+                if(tmpCounter >= 2){
+                    tmpCounter = tmpCounter - 1;
+                    document.getElementById("add-phone").disabled = false;   
+                }                                                                 
+                
+                if(tmpCounter == 1)
+                    document.getElementById("remove-phone").disabled = true; 
+                
                              
 
                 return {
+                    ...this.state,
                     phoneCounter:tmpCounter,
-                    myPhones: prevState.myPhones,
-                    update: prevState.update,         
-                    name:prevState.name,
-                    surname: prevState.surname,
-                    email: prevState.email,
-                    adress: prevState.adress,
-                    phones: prevState.phones
                 }
             },this.showPhones
             
@@ -135,30 +146,30 @@ export class Add extends Component {
         this.setState({adress: e.target.value});
     }
 
-    onChangePhones(e){       
-        console.log(e.target.value) 
-        this.setState({phones: e.target.value});
-    }
+   
 
    
 
     hideSelf(){
         document.getElementById("add-form").style.display = "none";
-        this.state.update();
+        this.state.refresh();
     }
 
     onSubmit(e){        
 
+        
         const toAdd = {
             name:this.state.name,
             surname:this.state.surname,
             email:this.state.email,
             adress:this.state.adress,
-            phones:this.state.phones
+            phones:this.state.phones 
         }
 
+
+       
         axios.post('http://localhost:5000/contacts/add',toAdd)
-        .then(this.state.update());
+        .then(this.state.refresh());
 
         
         this.hideSelf();
@@ -223,17 +234,14 @@ export class Add extends Component {
                 {this.state.myPhones}
                 
 
-                <Button onClick = {this.addPhone} variant="success">
-                    +
-                </Button>
-                <Button onClick = {this.removePhone} variant="danger">
-                    -
-                </Button>
+                <Button id="add-phone" onClick = {this.addPhone} variant="success">+</Button>
+                <Button id="remove-phone" onClick = {this.removePhone} variant="danger">-</Button>
 
-                <div style = {{float : "right"}}>
+                <div style = {{float:"right"}}>
                     <Button variant="success" type="submit">Add</Button>                                    
                     <Button onClick = {this.hideSelf}>Hide</Button> 
                 </div>
+
                 </Form>       
                         
             </div>

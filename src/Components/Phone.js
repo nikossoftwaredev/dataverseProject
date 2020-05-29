@@ -15,18 +15,18 @@ export class Phone extends Component {
         this.isPhoneValid = this.isPhoneValid.bind(this);
         this.onChange = this.onChange.bind(this);
 
-        console.log(this.state.id)
+        
 
        
     }
 
     onChange(e){
-        this.state.updatePhones();//e.target.value,this.state.id)
+        this.state.update(e.target.value,this.state.id);//e.target.value,this.state.id)
     }
 
     isPhoneValid(e){
          
-        if (!isNaN(this.state.phones))       
+        if (!isNaN(e.target.value))       
             e.target.style.borderColor = "green";
         else
             e.target.style.borderColor = "red";
@@ -42,7 +42,7 @@ export class Phone extends Component {
                     Phone <font color="red">*</font>
                     </Form.Label>
                     <Col sm="10">
-                    <Form.Control onBlur={this.isPhoneValid} onChange = {this.onChange} type="text" placeholder="Phone" required/>
+                    <Form.Control onBlur={this.isPhoneValid} onChange = {this.onChange} type="text" placeholder="Phone" />
                     </Col>
                 </Form.Group>
             </div>

@@ -15,14 +15,14 @@ export class PopulateContacts extends Component {
             myContacts:null
         };
 
-        this.handleParentFun = this.handleParentFun.bind(this);
+        this.refresh = this.refresh.bind(this);
         this.changeContacts = this.changeContacts.bind(this);
         
 
     }
 
     componentDidMount(){
-        this.handleParentFun();
+        this.refresh();
     }
 
     
@@ -39,7 +39,7 @@ export class PopulateContacts extends Component {
         
     }
 
-    handleParentFun = () =>{
+    refresh = () =>{
         
         axios.get('http://localhost:5000/contacts/')
             .then(res => {
@@ -73,7 +73,7 @@ export class PopulateContacts extends Component {
                 <h1 style = {{ textAlign:"center"}}>CONTACT LIST</h1>
                 <Button onClick = {this.showAdd} variant="outline-success" style={{ width: '30%',marginLeft:'35%' }}>ADD CONTACT</Button>           
                 {this.state.myContacts}
-                <Add update = {this.handleParentFun}/>                 
+                <Add refresh = {this.refresh}/>                 
          
             </div>
         )

@@ -32,11 +32,9 @@ const contactSchema = new Schema({
         minlength: 3
     },
     phones:{
-        type: Number,
+        type:[Number],
         required:true,
-        unique: true,
-        trim: true, //trim the whitespace of the end
-        minlength: 10
+        
     },
 },{
     timestamps :true,
