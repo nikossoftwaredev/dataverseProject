@@ -3,21 +3,28 @@ import { Col, Row, Form } from "react-bootstrap";
 import Button from 'react-bootstrap/Button'
 import '../index.css';
 import axios from "axios"
+import Phone from "./Phone"
 
+const max_phones = 6;
 
 export class Add extends Component {
+
+    
     constructor(props){
         super(props);
+
         this.state = {   
+            phoneCounter:1,
+            myPhones: [<Phone  key = "1" id ="1" change = {this.onChangePhones}/> ,<Phone key = "2" id ="2"/>,<Phone key = "3" id ="3"/> ,<Phone key = "4" id ="4"/>,<Phone key = "5" id ="5"/> ,<Phone key = "6" id ="6"/>],
             update: props.update,         
             name:"",
             surname: "",
             email: "",
             adress: "",
-            phones: ""
+            phones: []
         }
 
-
+        
         //getting the function from parent component
         //this.updateContents = this.props.update;
         
@@ -30,7 +37,86 @@ export class Add extends Component {
         this.onChangePhones = this.onChangePhones.bind(this);
         this.hideSelf = this.hideSelf.bind(this);
         this.isMailValid = this.isMailValid.bind(this);
-        this.isPhoneValid = this.isPhoneValid.bind(this);
+        this.addPhone = this.addPhone.bind(this);
+        this.removePhone = this.removePhone.bind(this);
+        this.showPhones = this.showPhones.bind(this);
+       
+        
+    }
+
+    componentDidMount(){
+        this.showPhones();
+    }
+
+    showPhones(){     
+             
+        for(let i =1 ;i<=max_phones ; i++){
+            if( this.state.phoneCounter >= i){
+                document.getElementById(i).style.display = "block";
+            }else{
+                document.getElementById(i).style.display = "none";
+            }
+        }
+    }
+
+    addPhone(){
+        this.setState(
+            prevState => {
+                let tmpCounter = this.state.phoneCounter;
+
+                
+                if(tmpCounter + 1 <= max_phones)
+                    tmpCounter = tmpCounter + 1;    
+                             
+                
+                return {
+                    phoneCounter:tmpCounter,
+                    myPhones: prevState.myPhones,
+                    update: prevState.update,         
+                    name:prevState.name,
+                    surname: prevState.surname,
+                    email: prevState.email,
+                    adress: prevState.adress,
+                    phones: prevState.phones
+                }
+            },this.showPhones
+            
+        )
+
+        
+
+        
+        
+        
+        
+    }
+
+    removePhone(){
+        this.setState(
+            prevState => {
+                let tmpCounter = this.state.phoneCounter;
+
+                if(tmpCounter >= 2)
+                    tmpCounter = prevState.phoneCounter - 1;            
+                             
+
+                return {
+                    phoneCounter:tmpCounter,
+                    myPhones: prevState.myPhones,
+                    update: prevState.update,         
+                    name:prevState.name,
+                    surname: prevState.surname,
+                    email: prevState.email,
+                    adress: prevState.adress,
+                    phones: prevState.phones
+                }
+            },this.showPhones
+            
+        )
+
+        
+
+        
     }
 
     onChangeName(e){        
@@ -49,7 +135,8 @@ export class Add extends Component {
         this.setState({adress: e.target.value});
     }
 
-    onChangePhones(e){        
+    onChangePhones(e){       
+        console.log(e.target.value) 
         this.setState({phones: e.target.value});
     }
 
@@ -90,15 +177,7 @@ export class Add extends Component {
         return (false)
     }
 
-    isPhoneValid(e){
-         
-        if (!isNaN(this.state.phones))       
-            e.target.style.borderColor = "green";
-        else
-            e.target.style.borderColor = "red";
-
-        return (false)
-    }
+    
 
     render() {
         return (
@@ -141,21 +220,20 @@ export class Add extends Component {
                     </Col>
                 </Form.Group>
 
-                <Form.Group as={Row} controlId="formPlaintextPassword">
-                    <Form.Label column sm="2">
-                    Phone <font color="red">*</font>
-                    </Form.Label>
-                    <Col sm="10">
-                    <Form.Control onBlur={this.isPhoneValid} onChange = {this.onChangePhones} type="text" placeholder="Phone" required/>
-                    </Col>
-                </Form.Group>
+                {this.state.myPhones}
+                
 
-                <Button variant="success" type="submit">
-                    Add
+                <Button onClick = {this.addPhone} variant="success">
+                    +
                 </Button>
-                                 
-                    <Button onClick = {this.hideSelf}>Hide</Button> 
+                <Button onClick = {this.removePhone} variant="danger">
+                    -
+                </Button>
 
+                <div style = {{float : "right"}}>
+                    <Button variant="success" type="submit">Add</Button>                                    
+                    <Button onClick = {this.hideSelf}>Hide</Button> 
+                </div>
                 </Form>       
                         
             </div>

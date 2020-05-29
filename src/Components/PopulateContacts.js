@@ -33,7 +33,7 @@ export class PopulateContacts extends Component {
             myContacts:this.state.myContacts.filter(contact => {  
                     console.log(contact.key)
                     //console.log("contact id" + contact.id)              
-                    return contact.key != id;
+                    return contact.key !== id;
             })
         })
         
@@ -48,8 +48,11 @@ export class PopulateContacts extends Component {
                         {
                             contacts:res.data,
                             myContacts:res.data.map( data => <Contact changeContacts = {this.changeContacts} key = {data._id} contact = {data}/>)
+                            
                         }
                     )
+
+                    
                 }
             })
         
