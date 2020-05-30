@@ -43,6 +43,7 @@ export class Phone extends Component {
                     </Form.Label>
                     <Col sm="10">
                     <Form.Control onBlur={this.isPhoneValid} onChange = {this.onChange} type="text" placeholder="Phone" />
+                    <p style = {{display:"none"}} id = {this.state.id+"error"}><font color = "red">Please enter a valid Phone.</font></p>
                     </Col>
                 </Form.Group>
             </div>

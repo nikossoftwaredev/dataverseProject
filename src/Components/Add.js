@@ -147,21 +147,33 @@ export class Add extends Component {
         }
        
 
+        var phoneOk = false;
+        let a = 0;
         //Must check if phones are valid before posting
-        for(let i =1 ; i<= max_phones ; i++){
-            if(this.isPhoneValid(i,this.state.phones[i])){
-
+        for(let i =1 ; i<= max_phones ; i++){            
+            if(this.isPhoneValid(i,this.state.phones[i-1])){
+                document.getElementById(i+"error").style.display = "none";
+                a++;
             }else{
-
+                document.getElementById(i+"error").style.display = "block";
             }
         }
+
+        console.log(a + "-" + this.state.phoneCounter)
+        if(a == this.state.phoneCounter)
+            phoneOk = true;
         //Using axios post as a promise
         if(this.isMailValid()){
-            axios.post('http://localhost:5000/contacts/add',toAdd)
-            .then(this.state.refresh);
 
-            this.hideSelf();
-            document.getElementById("mailError").style.display = "none";               
+            
+            if(phoneOk){
+                axios.post('http://localhost:5000/contacts/add',toAdd)
+                .then(this.state.refresh);
+                this.hideSelf();
+                document.getElementById("mailError").style.display = "none";    
+            }          
+
+                       
             
         
         }else{
@@ -191,7 +203,8 @@ export class Add extends Component {
     }
 
     isPhoneValid(id,value){
-        if(!isNaN(value)){
+
+        if(!isNaN(value) && value != ""){
             return true;
         }else{
             return false;
