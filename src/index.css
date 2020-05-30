@@ -10,11 +10,16 @@
     z-index: 2;      
 }
 
+body{
+    background-color: #808080;  
+}
+
 
 
 .add{  
     width: 30%;
     margin-left:35%;
+    margin-bottom: 1vh;
 }
 
 

@@ -9,12 +9,12 @@ export class PopulateContacts extends Component {
     constructor(props) {
         super(props);
         
-
         this.state = {          
             contacts: null,
            
         };
 
+        //binding the function to have acess to this.
         this.refresh = this.refresh.bind(this);
         this.changeContacts = this.changeContacts.bind(this);
         
@@ -23,6 +23,18 @@ export class PopulateContacts extends Component {
 
     componentDidMount(){
         this.refresh();
+    }
+
+    refresh(){
+        
+        axios.get('http://localhost:5000/contacts/')
+            .then(res => {
+                if(res.data.length > 0){                
+                    console.log(res.data)     
+                    this.setState({contacts:res.data})                                  
+                }                
+            })
+        
     }
 
     
@@ -36,22 +48,6 @@ export class PopulateContacts extends Component {
         })
         
     }
-
-    refresh(){
-
-        console.log("called Refresh")
-        axios.get('http://localhost:5000/contacts/')
-            .then(res => {
-                if(res.data.length > 0){                
-                    console.log(res.data)     
-                    this.setState({contacts:res.data})                                  
-                }                
-            })
-        
-    }
-
-   
-
 
     
 
@@ -68,7 +64,7 @@ export class PopulateContacts extends Component {
             myContacts = this.state.contacts.map( data => 
             <Contact refresh = {this.refresh} changeContacts = {this.changeContacts} key = {data._id} contact = {data}/>)
         return (
-            <div style = {{backgroundColor :"#808080"}}>                 
+            <div >                 
                 <Button className = "add" onClick = {this.showAdd} variant="success" >ADD CONTACT</Button>           
                 {myContacts}
                 <Add refresh = {this.refresh}/>                 

@@ -39,7 +39,7 @@ export class Phone extends Component {
             <div style = {{display:"none"}} id = {this.state.id}>
                 <Form.Group  as={Row} >
                     <Form.Label column sm="2">
-                    Phone <font color="red">*</font>
+                    Phone {this.state.id}<font color="red">*</font>
                     </Form.Label>
                     <Col sm="10">
                     <Form.Control onBlur={this.isPhoneValid} onChange = {this.onChange} type="text" placeholder="Phone" />

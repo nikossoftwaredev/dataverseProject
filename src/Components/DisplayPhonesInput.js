@@ -26,6 +26,7 @@ export class DisplayPhones extends Component {
     }
 
     onChange(e){
+        
         this.state.update(e.target.value,this.state.id);
         this.setState(
             {
@@ -40,7 +41,7 @@ export class DisplayPhones extends Component {
             <Form.Group  as={Row} >
                     <Form.Label column sm="2">Phone {this.state.id} </Form.Label>
                     <Col >
-                    <Form.Control onBlur = {this.isPhoneValid} onChange = {this.onChange} type="text" value={this.state.value}/>
+                    <Form.Control onBlur = {this.isPhoneValid} onChange = {this.onChange} value={this.state.value}/>
                     </Col>
              </Form.Group>
 

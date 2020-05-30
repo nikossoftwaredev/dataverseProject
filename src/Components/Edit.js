@@ -48,16 +48,11 @@ export class Edit extends Component {
     }
 
     updatePhones(value,id){    
-                   
+                
         this.setState(
             () =>{
-
                 let tmpPhones = this.state.phones;
-                tmpPhones[id-1] = parseInt(value);
-                return {
-                    ...this.state,
-                    phones:tmpPhones,
-                }
+                tmpPhones[id-1] = parseInt(value);               
             }
             
         )
