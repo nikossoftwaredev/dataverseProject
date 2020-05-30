@@ -10,7 +10,7 @@ export class Edit extends Component {
     constructor(props){
         super(props);
 
-        //console.log("Edit props " + props.info.id);
+        
         this.state = {    
             refresh:props.refresh,
             id:props.info.id,
@@ -21,6 +21,7 @@ export class Edit extends Component {
             phones:props.info.phones
         }
 
+        //binding all the Functions to access this
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangeSurname = this.onChangeSurname.bind(this);
         this.onChangeEmail = this.onChangeEmail.bind(this);
@@ -31,23 +32,15 @@ export class Edit extends Component {
 
     }
 
-    onChangeName(e){        
-        this.setState({name: e.target.value});
-    }
+    onChangeName(e){ this.setState({name: e.target.value});}
 
-    onChangeSurname(e){        
-        this.setState({surname: e.target.value});
-    }
+    onChangeSurname(e){ this.setState({surname: e.target.value});}
 
-    onChangeEmail(e){        
-        this.setState({email: e.target.value});
-    }
+    onChangeEmail(e){ this.setState({email: e.target.value});}
 
-    onChangeAdress(e){        
-        this.setState({adress: e.target.value});
-    }
+    onChangeAdress(e){ this.setState({adress: e.target.value});}
 
-    updatePhones(value,id){    
+    updatePhones(value,id){   
                 
         this.setState(
             () =>{
@@ -58,8 +51,7 @@ export class Edit extends Component {
         )
     }
 
-   
-
+    //Function that calls axios post for updating a Contact
     editMe(e){
         
         const toEdit = {
@@ -76,13 +68,13 @@ export class Edit extends Component {
 
         
         this.hideSelf();        
-        e.preventDefault();
+        e.preventDefault(); //prevents page from reloading without this post request will be aborted
         
    
     }
 
    
-
+    //Hidinng the Edit form
     hideSelf(){
         document.getElementById(this.state.id).style.display = "none";        
     }

@@ -12,9 +12,8 @@ export class Add extends Component {
     
     constructor(props){
         super(props);
-        //getting the function from parent component
-        //this.updateContents = this.props.update;        
-
+        //getting the function from parent component           
+        //Binding every function that needs to access state
         this.onSubmit = this.onSubmit.bind(this);
         this.onChangeName = this.onChangeName.bind(this);
         this.onChangeSurname = this.onChangeSurname.bind(this);
@@ -27,10 +26,16 @@ export class Add extends Component {
         this.removePhone = this.removePhone.bind(this);
         this.showPhones = this.showPhones.bind(this);
 
+        //Populating Multiple Phones based on max_phones which is currently 6
+        this.initPhones = [];
+        for(let i =1 ; i<= max_phones ; i++){
+            this.initPhones.push(<Phone  key = {i} id ={i} update = {this.updatePhones}/>);
+        }
+
         this.state = {   
             refresh:props.refresh,
             phoneCounter:1,
-            myPhones: [<Phone  key = "1" id ="1" update = {this.updatePhones}/> ,<Phone key = "2" id ="2" update = {this.updatePhones}/>,<Phone key = "3" id ="3" update = {this.updatePhones}/> ,<Phone key = "4" id ="4" update = {this.updatePhones}/>,<Phone key = "5" id ="5" update = {this.updatePhones}/> ,<Phone key = "6" id ="6" update = {this.updatePhones}/>],     
+            myPhones: this.initPhones,     
             name:"",
             surname: "",
             email: "",
@@ -43,23 +48,26 @@ export class Add extends Component {
 
     componentDidMount(){
         this.showPhones();
+        //Disabling the "-" Symbol at first because as a default it has 1 Phone
         document.getElementById("remove-phone").disabled = true;
     }
 
+    //Showing phones depending on the phoneCounter
     showPhones(){                  
         for(let i =1 ;i<=max_phones ; i++){
+            //phoneCounter is the number of extra Phones that the user wants to add
             if( this.state.phoneCounter >= i){
-                document.getElementById(i).style.display = "block";
+                document.getElementById(i).style.display = "block";                
             }else{
                 document.getElementById(i).style.display = "none";
             }
         }
     }
 
+    //Updating the state of all new Phones
     updatePhones(value,id){               
         this.setState(
             () =>{
-
                 let tmpPhones = this.state.phones;
                 tmpPhones[id-1] = parseInt(value);
                 return {
@@ -71,6 +79,7 @@ export class Add extends Component {
         )
     }
 
+    //Adding an extra Phone to the Form
     addPhone(){
         this.setState(
             () => {
@@ -83,19 +92,20 @@ export class Add extends Component {
                 if(tmpCounter == max_phones)
                     document.getElementById("add-phone").disabled = true; 
                 else if(tmpCounter >1)
-                    document.getElementById("remove-phone").disabled = false; 
-                             
+                    document.getElementById("remove-phone").disabled = false;                              
                 
-                return {                    
+                return {              
+                    //...this.state means that we take all the variables of the state object      
                     ...this.state,
                     phoneCounter:tmpCounter,        
                 }
-            },this.showPhones
+            },this.showPhones //Callback function after setState is Completed...
             
         )       
         
     }
 
+    //Removing the extra Phones
     removePhone(){
         this.setState(
             () => {
@@ -113,36 +123,19 @@ export class Add extends Component {
                     ...this.state,
                     phoneCounter:tmpCounter,
                 }
-            },this.showPhones
+            },this.showPhones //Callback function after setState is Completed...
             
         )
 
     }
 
-    onChangeName(e){        
-        this.setState({name: e.target.value});
-    }
-
-    onChangeSurname(e){        
-        this.setState({surname: e.target.value});
-    }
-
-    onChangeEmail(e){        
-        this.setState({email: e.target.value});
-    }
-
-    onChangeAdress(e){        
-        this.setState({adress: e.target.value});
-    }
-
-   
-
-   
-
+    //Hiding Add Button and Clearing the Form
     hideSelf(){
+        document.getElementById("myForm").reset()
         document.getElementById("add-form").style.display = "none";                
     }
 
+    //Handling on Submit event e is a variable that knows what component called the onSubmit...
     onSubmit(e){        
    
         const toAdd = {
@@ -153,25 +146,65 @@ export class Add extends Component {
             phones:this.state.phones 
         }
        
-        axios.post('http://localhost:5000/contacts/add',toAdd)
-        .then(this.state.refresh);
 
+        //Must check if phones are valid before posting
+        for(let i =1 ; i<= max_phones ; i++){
+            if(this.isPhoneValid(i,this.state.phones[i])){
+
+            }else{
+
+            }
+        }
+        //Using axios post as a promise
+        if(this.isMailValid()){
+            axios.post('http://localhost:5000/contacts/add',toAdd)
+            .then(this.state.refresh);
+
+            this.hideSelf();
+            document.getElementById("mailError").style.display = "none";               
+            
         
-        this.hideSelf();
-        document.getElementById("myForm").reset()        
-        e.preventDefault();
+        }else{
+            document.getElementById("mailError").style.display = "block";
+            
+        }
+
+      
+        
+        e.preventDefault(); //Prevents page from reloading which is a defeault action of the SUbmit Button on a form
+        
+        
         
     }
 
+    //Checking if email is valid copied from Stack Overflow
+    //Setting the form to red when email is invalid
     isMailValid(e){
-
-        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.state.email))       
-            e.target.style.borderColor = "green";
-        else
-            e.target.style.borderColor = "red";
-
-        return (false)
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.state.email)){
+            if(e != undefined)
+                e.target.style.borderColor = "green";
+            return true;
+        }else
+            if(e != undefined)
+                e.target.style.borderColor = "red";
+            return false;        
     }
+
+    isPhoneValid(id,value){
+        if(!isNaN(value)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    onChangeName(e){ this.setState({name: e.target.value}); }
+
+    onChangeSurname(e){ this.setState({surname: e.target.value});}
+
+    onChangeEmail(e){ this.setState({email: e.target.value});}
+
+    onChangeAdress(e){ this.setState({adress: e.target.value});}
 
     
 
@@ -204,6 +237,7 @@ export class Add extends Component {
                     </Form.Label>
                     <Col sm="10">
                     <Form.Control onBlur={this.isMailValid} onChange = {this.onChangeEmail} type="mail" placeholder="E-mail" required/>
+                    <p id ="mailError" style = {{display:"none"}}><font color="red">Please enter a valid e-mail.</font></p>
                     </Col>
                 </Form.Group>
 

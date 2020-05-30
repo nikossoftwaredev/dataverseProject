@@ -14,7 +14,7 @@ export class Contact extends Component {
         super(props);
 
         this.state = {            
-            change:props.changeContacts,
+            change:props.removeContacts,
             id:props.contact._id,
             name:props.contact.name,
             surname:props.contact.surname ,

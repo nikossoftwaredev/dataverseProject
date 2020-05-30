@@ -15,32 +15,31 @@ export class PopulateContacts extends Component {
         };
 
         //binding the function to have acess to this.
-        this.refresh = this.refresh.bind(this);
-        this.changeContacts = this.changeContacts.bind(this);
+        this.getData = this.getData.bind(this);
+        this.removeContacts = this.removeContacts.bind(this);
         
 
     }
 
     componentDidMount(){
-        this.refresh();
+        this.getData();
     }
 
-    refresh(){
-        
+    //Getting data from server api at /contacts/
+    getData(){     
+        //Using axios get Request with a promise 
+        //Setting the state with new Data
         axios.get('http://localhost:5000/contacts/')
             .then(res => {
-                if(res.data.length > 0){                
-                    console.log(res.data)     
+                if(res.data.length > 0)                                      
                     this.setState({contacts:res.data})                                  
-                }                
-            })
-        
+                               
+            })        
     }
 
     
-
-    changeContacts = (id) =>{     
-        
+    //Removing contacts from the state based on ID
+    removeContacts = (id) =>{          
         this.setState({
             contacts:this.state.contacts.filter(contact => {                                 
                     return contact._id !== id;
@@ -50,25 +49,22 @@ export class PopulateContacts extends Component {
     }
 
     
-
+    //Pop up Window as a form when pressing Add contact
     showAdd(){
         document.getElementById("add-form").style.display = "block";        
     }
     
-    render() {
-        //this.state.fetching ? console.log("fetching") : console.log(this.state.contacts);         
-        //console.log(this.state.contacts);
-       
+    render() {               
         var myContacts;
+        //Using map function on data to dynamically make Contact Components
         if(this.state.contacts != null)
-            myContacts = this.state.contacts.map( data => 
-            <Contact refresh = {this.refresh} changeContacts = {this.changeContacts} key = {data._id} contact = {data}/>)
+            myContacts = this.state.contacts.map( data => <Contact removeContacts = {this.removeContacts} key = {data._id} contact = {data}/>)
+            
         return (
             <div >                 
                 <Button className = "add" onClick = {this.showAdd} variant="success" >ADD CONTACT</Button>           
                 {myContacts}
-                <Add refresh = {this.refresh}/>                 
-         
+                <Add refresh = {this.getData}/>              
             </div>
         )
     }
